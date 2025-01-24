@@ -22,11 +22,24 @@ public class PlayerController : MonoBehaviour
     {
         if (!isMoving)
         {
-            input.x = Input.GetAxisRaw("Horizontal");
-            input.y = Input.GetAxisRaw("Vertical");
+            // Reset del input al inicio del frame
+            input = Vector2.zero;
+
+            if(MobileControls.Manager != null)
+                input = MobileControls.Manager.GetJoystick("Joystick");
+
+            // Si el Joystick no está presente usar el input por defecto
+            if(input == Vector2.zero)
+            {
+                input.x = Input.GetAxisRaw("Horizontal");
+                input.y = Input.GetAxisRaw("Vertical");
+            }
 
             // Remover movimiento diagonal
-            if (input.x != 0) input.y = 0;
+            if (Mathf.Abs(input.x) >= Mathf.Abs(input.y))
+                input.y = 0;
+            else
+                input.x = 0;
 
             if (input != Vector2.zero)
             {
