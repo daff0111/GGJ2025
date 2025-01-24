@@ -9,6 +9,7 @@ public class CompanionController : MonoBehaviour
     public LayerMask solidObjectsLayer;
     public GameObject followTargetObject;
     public Vector2 followOffset;
+    public float colliderRadius = 0.35f;
 
     private bool isMoving;
     private Vector3 moveDirection;
@@ -48,9 +49,7 @@ public class CompanionController : MonoBehaviour
                     // Chequea si no hay obstaculos
                     if (moveDirection != Vector3.zero && IsWalkable(targetPos) && IsWalkable(transform.position + moveDirection))
                     {
-                        // Mover al Animator
-                        animator.SetFloat("moveX", moveDirection.x);
-                        animator.SetFloat("moveY", moveDirection.y);
+                        AdjustMoveDirection(moveDirection);
                         animator.SetBool("isMoving", true);
 
                         yield return StartCoroutine(Move(targetPos));
@@ -65,6 +64,21 @@ public class CompanionController : MonoBehaviour
         }
     }
 
+    private void AdjustMoveDirection(Vector3 direction)
+    {
+        // Mover al Animator
+        if (Mathf.Abs(direction.x) >= Mathf.Abs(direction.y))
+        {
+            animator.SetFloat("moveX", direction.x > 0 ? 1 : -1);
+            animator.SetFloat("moveY", 0);
+        }
+        else
+        {
+            animator.SetFloat("moveX", 0);
+            animator.SetFloat("moveY", direction.y > 0 ? 1 : -1);
+        }
+    }
+
     private Vector2 GetMoveTarget()
     {
         Vector2 moveTarget = transform.position;
@@ -72,7 +86,7 @@ public class CompanionController : MonoBehaviour
         if(followTargetObject != null)
         {
             Vector2 currentOffset = followOffset;
-            if (followTargetPlayer)
+            if (followTargetPlayer != null)
             {
                 //Rotar el offset segun la direccion del jugador
                 Vector2 targetDirection = followTargetPlayer.GetLastDirection();
@@ -102,17 +116,30 @@ public class CompanionController : MonoBehaviour
             float speedModifier = 1;
             if ((targetPos - transform.position).sqrMagnitude > moveSpeed)
                 speedModifier = 2;
+
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime * speedModifier);
+            moveDirection = targetPos - transform.position;
+            AdjustMoveDirection(moveDirection);
+            
             yield return null;
         }
         transform.position = targetPos;
+
+        animator.SetBool("isMoving", false);
+        if (followTargetObject != null && followTargetPlayer != null)
+        {
+            //Rotar al final segun la direccion del jugador
+            Vector2 targetDirection = followTargetPlayer.GetLastDirection();
+            animator.SetFloat("moveX", targetDirection.x);
+            animator.SetFloat("moveY", targetDirection.y);
+        }
 
         isMoving = false;
     }
 
     private bool IsWalkable(Vector3 targetPos)
     {
-        Collider2D collider = Physics2D.OverlapCircle(targetPos, 0.25f, solidObjectsLayer);
+        Collider2D collider = Physics2D.OverlapCircle(targetPos, colliderRadius, solidObjectsLayer);
         if (collider != null && collider.gameObject != followTargetObject 
             && collider.gameObject != this.gameObject && collider.GetComponent<CompanionController>() == null)
         {
