@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isMoving;
     private Vector2 input;
+    private Vector2 lastDirection = new Vector2(0,-1);
 
     private Animator animator;
 
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
                 input.y = Input.GetAxisRaw("Vertical");
             }
 
+            input.Normalize();
+
             // Remover movimiento diagonal
             if (Mathf.Abs(input.x) >= Mathf.Abs(input.y))
                 input.y = 0;
@@ -49,6 +52,8 @@ public class PlayerController : MonoBehaviour
                 var targetPos = transform.position;
                 targetPos.x += input.x;
                 targetPos.y += input.y;
+                
+                lastDirection = input;
 
                 if (IsWalkable(targetPos))
                     StartCoroutine(Move(targetPos));
@@ -76,7 +81,8 @@ public class PlayerController : MonoBehaviour
 
     private bool IsWalkable(Vector3 targetPos)
     {
-        if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer) != null)
+        Collider2D collider = Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer);
+        if (collider != null && collider.gameObject != this.gameObject && collider.GetComponent<CompanionController>() == null)
         {
             return false;
         }
@@ -93,5 +99,10 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("Pokemon encontrado!");
             }
         }
+    }
+
+    public Vector2 GetLastDirection()
+    {
+        return lastDirection;
     }
 }

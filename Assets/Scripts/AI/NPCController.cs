@@ -42,9 +42,10 @@ public class NPCController : MonoBehaviour
                 var targetPos = transform.position;
                 targetPos.x += moveDirection.x;
                 targetPos.y += moveDirection.y;
+                Vector3 moveStep = moveDirection.normalized;
 
                 // Chequea si no hay obstaculos
-                if (moveDirection != Vector2.zero && IsWalkable(targetPos))
+                if (moveDirection != Vector2.zero && IsWalkable(targetPos) && IsWalkable(transform.position + moveStep))
                 {
                     // Mover al Animator
                     animator.SetFloat("moveX", moveDirection.x);
@@ -52,6 +53,11 @@ public class NPCController : MonoBehaviour
                     animator.SetBool("isMoving", true);
 
                     yield return StartCoroutine(Move(targetPos));
+
+                    if (pathSteps.Count > 0)
+                    {
+                        stepIndex = (stepIndex + 1) % pathSteps.Count;
+                    }
                 }
                 else
                 {
@@ -68,7 +74,6 @@ public class NPCController : MonoBehaviour
         if (pathSteps.Count > 0)
         {
             moveDirection = pathSteps[stepIndex];
-            stepIndex = (stepIndex + 1) % pathSteps.Count;
             return;
         }
 
@@ -103,6 +108,7 @@ public class NPCController : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
+
         transform.position = targetPos;
 
         isMoving = false;
@@ -110,7 +116,8 @@ public class NPCController : MonoBehaviour
 
     private bool IsWalkable(Vector3 targetPos)
     {
-        if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer) != null)
+        Collider2D collider = Physics2D.OverlapCircle(targetPos, 0.25f, solidObjectsLayer);
+        if (collider != null && collider.gameObject != this.gameObject)
         {
             return false;
         }
