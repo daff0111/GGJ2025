@@ -7,9 +7,9 @@ public class Move
     public MoveBase Base { get; set; }
     public int pp { get; set; }
 
-    public Move(MoveBase pBase, int pp)
+    public Move(MoveBase pBase)
     {
         Base = pBase;
-        pp = pp;
+        pp = pBase.PP;
     }
 }
