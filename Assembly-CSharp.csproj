@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Bubblemons\Move.cs" />
     <Compile Include="Assets\Scripts\Bubblemons\Bubblemon.cs" />
+    <Compile Include="Assets\Scripts\Player\CameraFollow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
