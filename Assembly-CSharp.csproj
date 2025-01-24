@@ -49,6 +49,10 @@
      <Compile Include="Assets\Scripts\Battle\BattleHud.cs" />
      <Compile Include="Assets\Scripts\Battle\BattleUnit.cs" />
      <Compile Include="Assets\Scripts\Battle\BattleSystem.cs" />
+     <Compile Include="Assets\Scripts\AI\Interactable.cs" />
+     <Compile Include="Assets\Scripts\UI\DialogManager.cs" />
+     <Compile Include="Assets\Scripts\UI\Dialog.cs" />
+     <Compile Include="Assets\Scripts\Player\CameraFollow.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.14f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
