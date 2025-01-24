@@ -112,6 +112,8 @@ public class NPCController : MonoBehaviour
         transform.position = targetPos;
 
         isMoving = false;
+        // Frenar si no hay movimiento
+        animator.SetBool("isMoving", false);
     }
 
     private bool IsWalkable(Vector3 targetPos)
