@@ -8,12 +8,14 @@ public class PlayerController : MonoBehaviour
     public LayerMask solidObjectsLayer;
     public LayerMask grassLayer;
     public LayerMask interactLayer;
+    public float interactDelay = 1.0f;
 
     private bool isMoving;
     private bool isInteracting;
     private Vector2 input;
     private Vector2 lastDirection = new Vector2(0,-1);
     private Interactable interactedObject;
+    private float interactTimer;
 
     private Animator animator;
 
@@ -27,10 +29,13 @@ public class PlayerController : MonoBehaviour
     {
         if(!isInteracting)
         {
-            if(MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z))
+            if(interactTimer <= 0 && (MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
             {
                 Interact();
             }
+
+            if(interactTimer > 0)
+                interactTimer -= Time.deltaTime;
         }
         else
         {
@@ -104,7 +109,7 @@ public class PlayerController : MonoBehaviour
         Collider2D collider = Physics2D.OverlapCircle(interactPosition, 0.3f, interactLayer);
         if (collider != null)
         {
-            Debug.Log("Interacting");
+            Debug.Log("Interactuando con "+ collider.gameObject.name);
 
             isInteracting = true;
             animator.SetBool("isMoving", false);
@@ -113,6 +118,8 @@ public class PlayerController : MonoBehaviour
             if (interactedObject != null)
             {
                 interactedObject.Interact(this.gameObject);
+
+                DialogManager.Instance.OnDialogEnded += OnDialogEnded;
             }
         }
     }
@@ -122,8 +129,10 @@ public class PlayerController : MonoBehaviour
         if (isInteracting)
         {
             isInteracting = false;
+            DialogManager.Instance.OnDialogEnded -= OnDialogEnded;
+            interactTimer = interactDelay;
 
-            if(interactedObject != null)
+            if (interactedObject != null)
             {
                 interactedObject.StopInteract();
             }
@@ -155,5 +164,9 @@ public class PlayerController : MonoBehaviour
     public Vector2 GetLastDirection()
     {
         return lastDirection;
+    }
+    void OnDialogEnded()
+    {
+        StopInteract();
     }
 }

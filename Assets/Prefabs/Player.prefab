@@ -107,6 +107,7 @@ MonoBehaviour:
   interactLayer:
     serializedVersion: 2
     m_Bits: 1024
+  interactDelay: 1
 --- !u!95 &644181769997633055
 Animator:
   serializedVersion: 3

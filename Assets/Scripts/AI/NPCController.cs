@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class NPCController : MonoBehaviour, Interactable
     public LayerMask solidObjectsLayer;
     public float moveInterval = 2f; // Tiempo entre movimientos del NPC
     public List<Vector2> pathSteps; // Pasos determinados para un Loop
-
+    [SerializeField] Dialog NPCDialog;
 
     private bool isMoving;
     private Vector2 moveDirection;
@@ -44,11 +45,14 @@ public class NPCController : MonoBehaviour, Interactable
         animator.SetFloat("moveX", interactDirection.x);
         animator.SetFloat("moveY", interactDirection.y);
         animator.SetBool("isMoving", false);
+
+        DialogManager.Instance.ShowDialog(NPCDialog);
     }
 
     public void StopInteract()
     {
         isInteracting = false;
+        DialogManager.Instance.HideDialog();
     }
 
     IEnumerator MoveNPC()
@@ -102,7 +106,7 @@ public class NPCController : MonoBehaviour, Interactable
         }
 
         // O escoge una direccion random
-        int randomDir = Random.Range(0, 5); // 0: stay, 1: up, 2: down, 3: left, 4: right
+        int randomDir = UnityEngine.Random.Range(0, 5); // 0: stay, 1: up, 2: down, 3: left, 4: right
         switch (randomDir)
         {
             case 0:

@@ -131,6 +131,10 @@ MonoBehaviour:
   - {x: 3, y: 0}
   - {x: 0, y: -3}
   - {x: -3, y: 0}
+  NPCDialog:
+    lines:
+    - Hola soy Paco
+    - Jerte es mi apellido
 --- !u!70 &1589988528
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
