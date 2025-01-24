@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1587329164507792114}
   - component: {fileID: 1587329164507792115}
   - component: {fileID: 1587329164507792116}
+  - component: {fileID: 829823770}
   m_Layer: 0
   m_Name: Companion
   m_TagString: Untagged
@@ -122,3 +123,20 @@ MonoBehaviour:
     m_Bits: 256
   followTargetObject: {fileID: 0}
   followOffset: {x: -1, y: 1}
+  colliderRadius: 0.5
+--- !u!70 &829823770
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587329164507792119}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1, y: 1}
+  m_Direction: 0

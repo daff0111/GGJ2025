@@ -7,21 +7,40 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
     public LayerMask grassLayer;
+    public LayerMask interactLayer;
 
     private bool isMoving;
+    private bool isInteracting;
     private Vector2 input;
     private Vector2 lastDirection = new Vector2(0,-1);
+    private Interactable interactedObject;
 
     private Animator animator;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        isInteracting = false;
     }
 
     private void Update()
     {
-        if (!isMoving)
+        if(!isInteracting)
+        {
+            if(MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z))
+            {
+                Interact();
+            }
+        }
+        else
+        {
+            if (MobileControls.Manager.GetMobileButton("ButtonB") || Input.GetKeyDown(KeyCode.B))
+            {
+                StopInteract();
+            }
+        }
+
+        if (!isInteracting && !isMoving)
         {
             // Reset del input al inicio del frame
             input = Vector2.zero;
@@ -77,6 +96,38 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
 
         CheckForEncounters();
+    }
+
+    private void Interact()
+    {
+        Vector3 interactPosition = transform.position + new Vector3(lastDirection.x, lastDirection.y);
+        Collider2D collider = Physics2D.OverlapCircle(interactPosition, 0.3f, interactLayer);
+        if (collider != null)
+        {
+            Debug.Log("Interacting");
+
+            isInteracting = true;
+            animator.SetBool("isMoving", false);
+
+            interactedObject = collider.gameObject.GetComponent<Interactable>();
+            if (interactedObject != null)
+            {
+                interactedObject.Interact(this.gameObject);
+            }
+        }
+    }
+
+    private void StopInteract()
+    {
+        if (isInteracting)
+        {
+            isInteracting = false;
+
+            if(interactedObject != null)
+            {
+                interactedObject.StopInteract();
+            }
+        }
     }
 
     private bool IsWalkable(Vector3 targetPos)

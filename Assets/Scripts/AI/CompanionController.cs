@@ -47,7 +47,7 @@ public class CompanionController : MonoBehaviour
                     moveDirection.Normalize();
 
                     // Chequea si no hay obstaculos
-                    if (moveDirection != Vector3.zero && IsWalkable(targetPos) && IsWalkable(transform.position + moveDirection))
+                    if (moveDirection != Vector3.zero && IsWalkable(targetPos))
                     {
                         AdjustMoveDirection(moveDirection);
                         animator.SetBool("isMoving", true);
@@ -113,14 +113,23 @@ public class CompanionController : MonoBehaviour
         while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
         {
             targetPos = GetMoveTarget();
-            float speedModifier = 1;
-            if ((targetPos - transform.position).sqrMagnitude > moveSpeed)
-                speedModifier = 2;
+            if(IsWalkable(targetPos))
+            {
+                float speedModifier = 1;
+                if ((targetPos - transform.position).sqrMagnitude > moveSpeed)
+                    speedModifier = 2;
 
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime * speedModifier);
-            moveDirection = targetPos - transform.position;
-            AdjustMoveDirection(moveDirection);
-            
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime * speedModifier);
+                moveDirection = targetPos - transform.position;
+                AdjustMoveDirection(moveDirection);
+                animator.SetBool("isMoving", true);
+
+            }
+            else
+            {
+                animator.SetBool("isMoving", false);
+            }
+
             yield return null;
         }
         transform.position = targetPos;

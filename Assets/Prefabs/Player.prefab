@@ -100,10 +100,13 @@ MonoBehaviour:
   moveSpeed: 5
   solidObjectsLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1280
   grassLayer:
     serializedVersion: 2
     m_Bits: 512
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!95 &644181769997633055
 Animator:
   serializedVersion: 3
@@ -137,5 +140,5 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1, y: 1.5}
   m_Direction: 0

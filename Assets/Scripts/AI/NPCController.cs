@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCController : MonoBehaviour
+public class NPCController : MonoBehaviour, Interactable
 {
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
@@ -12,19 +12,43 @@ public class NPCController : MonoBehaviour
 
     private bool isMoving;
     private Vector2 moveDirection;
+    private Vector3 targetPos;
     private int stepIndex = 0;
 
+    private bool isInteracting = false;
 
     private Animator animator;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        targetPos = transform.position;
     }
 
     private void Start()
     {
         StartCoroutine(MoveNPC());
+    }
+
+    public void Interact(GameObject targetObject)
+    {
+        if (isInteracting || targetObject == null)
+            return;
+
+        isInteracting = true;
+
+        isMoving = false;
+        Vector3 interactDirection = targetObject.transform.position - transform.position;
+        interactDirection.Normalize();
+
+        animator.SetFloat("moveX", interactDirection.x);
+        animator.SetFloat("moveY", interactDirection.y);
+        animator.SetBool("isMoving", false);
+    }
+
+    public void StopInteract()
+    {
+        isInteracting = false;
     }
 
     IEnumerator MoveNPC()
@@ -35,11 +59,12 @@ public class NPCController : MonoBehaviour
             yield return new WaitForSeconds(moveInterval);
 
             // Si no te estas moviendo calcula una nueva direccion
-            if (!isMoving)
+            if (!isMoving && !isInteracting)
             {
-                DecideMoveDirection();
+                if(targetPos == transform.position)
+                    DecideMoveDirection();
 
-                var targetPos = transform.position;
+                targetPos = transform.position;
                 targetPos.x += moveDirection.x;
                 targetPos.y += moveDirection.y;
                 Vector3 moveStep = moveDirection.normalized;
@@ -53,11 +78,6 @@ public class NPCController : MonoBehaviour
                     animator.SetBool("isMoving", true);
 
                     yield return StartCoroutine(Move(targetPos));
-
-                    if (pathSteps.Count > 0)
-                    {
-                        stepIndex = (stepIndex + 1) % pathSteps.Count;
-                    }
                 }
                 else
                 {
@@ -74,6 +94,10 @@ public class NPCController : MonoBehaviour
         if (pathSteps.Count > 0)
         {
             moveDirection = pathSteps[stepIndex];
+            if (pathSteps.Count > 0)
+            {
+                stepIndex = (stepIndex + 1) % pathSteps.Count;
+            }
             return;
         }
 
@@ -103,13 +127,14 @@ public class NPCController : MonoBehaviour
     {
         isMoving = true;
 
-        while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
+        while (!isInteracting && (targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        transform.position = targetPos;
+        if(!isInteracting)
+            transform.position = targetPos;
 
         isMoving = false;
         // Frenar si no hay movimiento
