@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isInteracting)
         {
-            if (interactTimer <= 0 && (MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
+            if (interactTimer <= 0 && (MobileControls.Manager.GetMobileButtonDown("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
             {
                 Interact();
             }

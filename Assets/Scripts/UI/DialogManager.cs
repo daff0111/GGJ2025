@@ -25,7 +25,7 @@ public class DialogManager : MonoBehaviour
     }
     public void Update()
     {
-        if (isActive && canAdvance && (MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
+        if (isActive && canAdvance && (MobileControls.Manager.GetMobileButtonDown("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
         {
             lineIndex++;
             if(lineIndex < activeDialog.Lines.Count)
