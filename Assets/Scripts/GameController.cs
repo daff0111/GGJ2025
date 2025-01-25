@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState { FreeRoam, Battle }
+public enum GameState { FreeRoam, Battle, Dialog }
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
     [SerializeField] BattleSystem battleSystem;
+    [SerializeField] DialogManager dialogManager;
     [SerializeField] Camera worldCamera;
     GameState state;
 
@@ -15,6 +16,8 @@ public class GameController : MonoBehaviour
     {
         playerController.OnEncountered += StartBattle;
         battleSystem.OnBattleOver += EndBattle;
+        dialogManager.OnDialogStarted += StartDialog;
+        dialogManager.OnDialogEnded += EndDialog;
     }
 
     void StartBattle()
@@ -33,6 +36,18 @@ public class GameController : MonoBehaviour
         worldCamera.gameObject.SetActive(true);
     }
 
+    void StartDialog()
+    {
+        state = GameState.Dialog;
+        battleSystem.gameObject.SetActive(false);
+    }
+
+    void EndDialog()
+    {
+        state = GameState.FreeRoam;
+        battleSystem.gameObject.SetActive(false);
+    }
+
     private void Update()
     {
         if (state == GameState.FreeRoam)
@@ -42,6 +57,10 @@ public class GameController : MonoBehaviour
         else if (state == GameState.Battle)
         {
             battleSystem.HandleUpdate();
+        }
+        else if (state == GameState.Dialog)
+        {
+            dialogManager.HandleUpdate();
         }
     }
 }

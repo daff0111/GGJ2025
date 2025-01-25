@@ -113,6 +113,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Interactuando con " + collider.gameObject.name);
 
+            isMoving = false;
             isInteracting = true;
             animator.SetBool("isMoving", false);
 
