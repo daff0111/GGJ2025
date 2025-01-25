@@ -122,3 +122,4 @@ MonoBehaviour:
     m_Bits: 256
   followTargetObject: {fileID: 0}
   followOffset: {x: -1, y: 1}
+  colliderRadius: 0.35
