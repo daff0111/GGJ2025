@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy}
+public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy }
 
 public class BattleSystem : MonoBehaviour
 {
@@ -42,8 +42,13 @@ public class BattleSystem : MonoBehaviour
     void PlayerAction()
     {
         state = BattleState.PlayerAction;
-        StartCoroutine(dialogBox.TypeDialog("Choose an action"));
+        dialogBox.SetDialog("Choose an action");
         dialogBox.EnableActionSelector(true);
+    }
+
+    void OpenPartyScreen()
+    {
+        print("Party Screen");
     }
 
     void PlayerMove()
@@ -56,7 +61,19 @@ public class BattleSystem : MonoBehaviour
 
     void PlayerRun()
     {
-        //Salir del Combate
+        state = BattleState.Busy;
+        StartCoroutine(HandleRunAttempt());
+    }
+
+    IEnumerator HandleRunAttempt()
+    {
+        yield return dialogBox.TypeDialog("You ran away safely!");
+        
+        // Finalizar la batalla
+        OnBattleOver?.Invoke(false);
+
+        // Opcional: Desactivar el sistema de batalla
+        gameObject.SetActive(false);
     }
 
     IEnumerator PerformPlayerMove()
@@ -124,9 +141,9 @@ public class BattleSystem : MonoBehaviour
             yield return dialogBox.TypeDialog("A critical hit!");
 
         if (damageDetails.TypeEffectiveness > 1f)
-            yield return dialogBox.TypeDialog("It´s super effective! ");
+            yield return dialogBox.TypeDialog("It’s super effective!");
         else if (damageDetails.TypeEffectiveness < 1f)
-            yield return dialogBox.TypeDialog("It´s not very effective... ");
+            yield return dialogBox.TypeDialog("It’s not very effective...");
     }
 
     public void HandleUpdate()
@@ -143,16 +160,16 @@ public class BattleSystem : MonoBehaviour
 
     void HandleActionSelection()
     {
-        if (MobileControls.Manager.GetJoystickDown("Joystick"))
-        {
-            if (currentAction < 1)
-                ++currentAction;
-        }
-        else if (MobileControls.Manager.GetJoystickUp("Joystick"))
-        {
-            if (currentAction > 0)
-                --currentAction;
-        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+            ++currentAction;
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            --currentAction;
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+            currentAction += 2;
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+            currentAction -= 2;
+
+        currentAction = Mathf.Clamp(currentAction, 0, 3);
 
         dialogBox.UpdateActionSelection(currentAction);
 
@@ -165,6 +182,15 @@ public class BattleSystem : MonoBehaviour
             }
             else if (currentAction == 1)
             {
+                // Bag
+            }
+            else if (currentAction == 2)
+            {
+                // Bubblemon
+                OpenPartyScreen();
+            }
+            else if (currentAction == 3)
+            {
                 // Run
                 PlayerRun();
             }
@@ -173,26 +199,28 @@ public class BattleSystem : MonoBehaviour
 
     void HandleMoveSelection()
     {
-        if (MobileControls.Manager.GetJoystickRight("Joystick"))
+        if (MobileControls.Manager.GetJoystickRight("Joystick") || Input.GetKeyDown(KeyCode.RightArrow))
         {
             if (currentMove < playerUnit.Bubblemon.Moves.Count - 1)
                 ++currentMove;
         }
-        else if (MobileControls.Manager.GetJoystickLeft("Joystick"))
+        else if (MobileControls.Manager.GetJoystickLeft("Joystick") || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             if (currentMove > 0)
                 --currentMove;
         }
-        else if (MobileControls.Manager.GetJoystickDown("Joystick"))
+        else if (MobileControls.Manager.GetJoystickDown("Joystick") || Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (currentMove < playerUnit.Bubblemon.Moves.Count - 2)
                 currentMove += 2;
         }
-        else if (MobileControls.Manager.GetJoystickUp("Joystick"))
+        else if (MobileControls.Manager.GetJoystickUp("Joystick") || Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (currentMove > 1)
                 currentMove -= 2;
         }
+
+        currentMove = Mathf.Clamp(currentMove, 0, playerUnit.Bubblemon.Moves.Count - 1);
 
         dialogBox.UpdateMoveSelection(currentMove, playerUnit.Bubblemon.Moves[currentMove]);
 
@@ -205,6 +233,12 @@ public class BattleSystem : MonoBehaviour
         if ((MobileControls.Manager.GetMobileButtonDown("ButtonB") || Input.GetKeyDown(KeyCode.B)))
         {
             dialogBox.EnableMoveSelector(false);
+            PlayerAction();
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            dialogBox.EnableMoveSelector(false);
+            dialogBox.EnableDialogText(true);
             PlayerAction();
         }
     }
