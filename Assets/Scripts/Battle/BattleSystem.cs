@@ -58,6 +58,7 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.Busy;
 
         var move = playerUnit.Bubblemon.Moves[currentMove];
+        move.PP--;
         yield return dialogBox.TypeDialog($"{playerUnit.Bubblemon.Base.Name} used {move.Base.Name}");
 
         playerUnit.PlayerAttackAnimation();
@@ -86,6 +87,7 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.EnemyMove;
 
         var move = enemyUnit.Bubblemon.GetRandomMove();
+        move.PP--;
         yield return dialogBox.TypeDialog($"{enemyUnit.Bubblemon.Base.Name} used {move.Base.Name}");
 
         enemyUnit.PlayerAttackAnimation();

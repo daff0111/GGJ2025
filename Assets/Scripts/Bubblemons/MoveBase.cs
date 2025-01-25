@@ -39,4 +39,17 @@ public class MoveBase : ScriptableObject
         get { return pp;}
     }
 
+    public bool IsSpecial {
+        get {
+            if (type == BubblemonType.Fire || type == BubblemonType.Water || type == BubblemonType.Grass
+                || type == BubblemonType.Ice || type == BubblemonType.Electric || type == BubblemonType.Dragon)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }
