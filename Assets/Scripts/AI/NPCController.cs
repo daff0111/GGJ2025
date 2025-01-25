@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class NPCController : MonoBehaviour, Interactable
     private bool isInteracting = false;
 
     private Animator animator;
+    public event Action OnInteractEnded;
 
     private void Awake()
     {
@@ -51,12 +53,16 @@ public class NPCController : MonoBehaviour, Interactable
     {
         isInteracting = false;
         DialogManager.Instance.HideDialog();
+        OnInteractEnded?.Invoke();
     }
 
     IEnumerator MoveNPC()
     {
         while (true)
         {
+            if (!enabled)
+                break;
+
             // Intervalo de pausa
             yield return new WaitForSeconds(moveInterval);
 
@@ -104,7 +110,7 @@ public class NPCController : MonoBehaviour, Interactable
         }
 
         // O escoge una direccion random
-        int randomDir = Random.Range(0, 5); // 0: stay, 1: up, 2: down, 3: left, 4: right
+        int randomDir = UnityEngine.Random.Range(0, 5); // 0: stay, 1: up, 2: down, 3: left, 4: right
         switch (randomDir)
         {
             case 0:
