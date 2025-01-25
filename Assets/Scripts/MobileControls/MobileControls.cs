@@ -40,6 +40,64 @@ public class MobileControls : MonoBehaviour
         return Vector2.zero;
     }
 
+    public bool GetJoystickUp(string joystickName)
+    {
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i].buttonName == joystickName)
+            {
+                return buttons[i].GetAxisUpDown();
+            }
+        }
+
+        Debug.LogError("Joystick " + joystickName + " not found.");
+
+        return false;
+    }
+    public bool GetJoystickDown(string joystickName)
+    {
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i].buttonName == joystickName)
+            {
+                return buttons[i].GetAxisDownDown();
+            }
+        }
+
+        Debug.LogError("Joystick " + joystickName + " not found.");
+
+        return false;
+    }
+    public bool GetJoystickRight(string joystickName)
+    {
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i].buttonName == joystickName)
+            {
+                return buttons[i].GetAxisRightDown();
+            }
+        }
+
+        Debug.LogError("Joystick " + joystickName + " not found.");
+
+        return false;
+    }
+    public bool GetJoystickLeft(string joystickName)
+    {
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i].buttonName == joystickName)
+            {
+                return buttons[i].GetAxisLeftDown();
+            }
+        }
+
+        Debug.LogError("Joystick " + joystickName + " not found.");
+
+        return false;
+    }
+
+
     public bool GetMobileButton(string buttonName)
     {
         for (int i = 0; i < buttons.Count; i++)

@@ -14,6 +14,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleDialogBox dialogBox;
 
     public event Action<bool> OnBattleOver;
+    private Vector2 playerInput;
 
     BattleState state;
     int currentAction;
@@ -51,6 +52,11 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableActionSelector(false);
         dialogBox.EnableDialogText(false);
         dialogBox.EnableMoveSelector(true);
+    }
+
+    void PlayerRun()
+    {
+        //Salir del Combate
     }
 
     IEnumerator PerformPlayerMove()
@@ -137,12 +143,12 @@ public class BattleSystem : MonoBehaviour
 
     void HandleActionSelection()
     {
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (MobileControls.Manager.GetJoystickDown("Joystick"))
         {
             if (currentAction < 1)
                 ++currentAction;
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (MobileControls.Manager.GetJoystickUp("Joystick"))
         {
             if (currentAction > 0)
                 --currentAction;
@@ -150,7 +156,7 @@ public class BattleSystem : MonoBehaviour
 
         dialogBox.UpdateActionSelection(currentAction);
 
-        if (Input.GetKeyDown(KeyCode.Z))
+        if ((MobileControls.Manager.GetMobileButtonDown("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
         {
             if (currentAction == 0)
             {
@@ -160,28 +166,29 @@ public class BattleSystem : MonoBehaviour
             else if (currentAction == 1)
             {
                 // Run
+                PlayerRun();
             }
         }
     }
 
     void HandleMoveSelection()
     {
-         if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (MobileControls.Manager.GetJoystickRight("Joystick"))
         {
             if (currentMove < playerUnit.Bubblemon.Moves.Count - 1)
                 ++currentMove;
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (MobileControls.Manager.GetJoystickLeft("Joystick"))
         {
             if (currentMove > 0)
                 --currentMove;
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (MobileControls.Manager.GetJoystickDown("Joystick"))
         {
-           if (currentMove < playerUnit.Bubblemon.Moves.Count - 2)
+            if (currentMove < playerUnit.Bubblemon.Moves.Count - 2)
                 currentMove += 2;
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (MobileControls.Manager.GetJoystickUp("Joystick"))
         {
             if (currentMove > 1)
                 currentMove -= 2;
@@ -189,11 +196,16 @@ public class BattleSystem : MonoBehaviour
 
         dialogBox.UpdateMoveSelection(currentMove, playerUnit.Bubblemon.Moves[currentMove]);
 
-        if (Input.GetKeyDown(KeyCode.Z))
+        if ((MobileControls.Manager.GetMobileButtonDown("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
         {
             dialogBox.EnableMoveSelector(false);
             dialogBox.EnableDialogText(true);
             StartCoroutine(PerformPlayerMove());
+        }
+        if ((MobileControls.Manager.GetMobileButtonDown("ButtonB") || Input.GetKeyDown(KeyCode.B)))
+        {
+            dialogBox.EnableMoveSelector(false);
+            PlayerAction();
         }
     }
 }

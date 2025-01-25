@@ -14,6 +14,7 @@ public class DialogManager : MonoBehaviour
     private int lineIndex = 0;
     private Dialog activeDialog;
 
+    public event Action OnDialogStarted;
     public event Action OnDialogEnded;
 
     public static DialogManager Instance { get; private set; }
@@ -21,20 +22,27 @@ public class DialogManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        HideDialog();
+        isActive = false;
+        dialogBox.SetActive(false);
     }
-    public void Update()
+    public void HandleUpdate()
     {
-        if (isActive && canAdvance && (MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
+        if (isActive)
         {
-            lineIndex++;
-            if(lineIndex < activeDialog.Lines.Count)
+            if(canAdvance && (MobileControls.Manager.GetMobileButtonDown("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
             {
-                StartCoroutine(TypeDialog(activeDialog.Lines[lineIndex]));
+                lineIndex++;
+                if (lineIndex < activeDialog.Lines.Count)
+                {
+                    StartCoroutine(TypeDialog(activeDialog.Lines[lineIndex]));
+                }
+                else
+                {
+                    HideDialog();
+                }
             }
-            else
+            else if(MobileControls.Manager.GetMobileButtonDown("ButtonB") || Input.GetKeyDown(KeyCode.B))
             {
-                OnDialogEnded.Invoke();
                 HideDialog();
             }
         }
@@ -43,16 +51,20 @@ public class DialogManager : MonoBehaviour
     // Start is called before the first frame update
     public void ShowDialog(Dialog dialog)
     {
-        activeDialog = dialog;
-        lineIndex = 0;
-        dialogBox.SetActive(true);
-        StartCoroutine(TypeDialog(dialog.Lines[lineIndex]));
         isActive = true;
+        lineIndex = 0;
+        activeDialog = dialog;
+        dialogBox.SetActive(true);
+        OnDialogStarted.Invoke();
+        
+        StartCoroutine(TypeDialog(dialog.Lines[lineIndex]));
     }
 
     public void HideDialog()
     {
+        OnDialogEnded.Invoke();
         dialogBox.SetActive(false);
+        
         isActive = false;
     }
 

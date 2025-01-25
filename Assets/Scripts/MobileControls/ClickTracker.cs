@@ -23,6 +23,7 @@ public class ClickTracker : MonoBehaviour, IPointerDownHandler, IDragHandler, IP
     Vector2 inputAxis = Vector2.zero;
     bool isHolding = false;
     bool isClicked = false;
+    private bool[] axisDown = new bool[4];
 
     void Start()
     {
@@ -40,6 +41,15 @@ public class ClickTracker : MonoBehaviour, IPointerDownHandler, IDragHandler, IP
             inputAxis.y = Input.GetAxisRaw("Vertical");
             //Simulate Joystick movement with Input axis
             rt.anchoredPosition = startPos + (new Vector3(inputAxis.x, inputAxis.y, 0) * (rt.sizeDelta.x / 2));
+        }
+
+        if(inputAxis == Vector2.zero)
+        {
+            //Reset the axis
+            axisDown[0] = false;
+            axisDown[1] = false;
+            axisDown[2] = false;
+            axisDown[3] = false;
         }
 
     }
@@ -110,6 +120,74 @@ public class ClickTracker : MonoBehaviour, IPointerDownHandler, IDragHandler, IP
     public Vector2 GetInputAxis()
     {
         return inputAxis;
+    }
+
+    public bool GetAxisRightDown()
+    {
+        if(inputAxis == Vector2.zero) return false;
+
+        if (!axisDown[0] && inputAxis.x > 0 && Mathf.Abs(inputAxis.x) > Mathf.Abs(inputAxis.y))
+        {
+            //Activar la direccion
+            axisDown[0] = true;
+            axisDown[1] = false;
+            axisDown[2] = false;
+            axisDown[3] = false;
+
+            return true;
+        }
+        return false;
+    }
+    public bool GetAxisLeftDown()
+    {
+        if (inputAxis == Vector2.zero) return false;
+
+        if (!axisDown[1] && inputAxis.x <= 0 && Mathf.Abs(inputAxis.x) > Mathf.Abs(inputAxis.y))
+        {
+            //Activar la direccion
+            axisDown[0] = false;
+            axisDown[1] = true;
+            axisDown[2] = false;
+            axisDown[3] = false;
+
+            return true;
+        }
+
+        return false;
+    }
+    public bool GetAxisUpDown()
+    {
+        if (inputAxis == Vector2.zero) return false;
+
+        if (!axisDown[2] && inputAxis.y > 0 && Mathf.Abs(inputAxis.x) <= Mathf.Abs(inputAxis.y))
+        {
+            //Activar la direccion
+            axisDown[0] = false;
+            axisDown[1] = false;
+            axisDown[2] = true;
+            axisDown[3] = false;
+
+            return true;
+        }
+
+        return false;
+    }
+    public bool GetAxisDownDown()
+    {
+        if (inputAxis == Vector2.zero) return false;
+
+        if (!axisDown[3] && inputAxis.y <= 0 && Mathf.Abs(inputAxis.x) <= Mathf.Abs(inputAxis.y))
+        {
+            //Activar la direccion
+            axisDown[0] = false;
+            axisDown[1] = false;
+            axisDown[2] = false;
+            axisDown[3] = true;
+
+            return true;
+        }
+
+        return false;
     }
 
     public bool GetClickedStatus()
