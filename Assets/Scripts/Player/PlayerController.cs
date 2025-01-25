@@ -7,30 +7,53 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
     public LayerMask grassLayer;
+    public LayerMask interactLayer;
+    public float interactDelay = 1.0f;
 
     private bool isMoving;
+    private bool isInteracting;
     private Vector2 input;
-    private Vector2 lastDirection = new Vector2(0,-1);
+    private Vector2 lastDirection = new Vector2(0, -1);
+    private Interactable interactedObject;
+    private float interactTimer;
 
     private Animator animator;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        isInteracting = false;
     }
 
     private void Update()
     {
-        if (!isMoving)
+        if (!isInteracting)
+        {
+            if (interactTimer <= 0 && (MobileControls.Manager.GetMobileButton("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
+            {
+                Interact();
+            }
+            if (interactTimer > 0)
+                interactTimer -= Time.deltaTime;
+        }
+        else
+        {
+            if (MobileControls.Manager.GetMobileButton("ButtonB") || Input.GetKeyDown(KeyCode.B))
+            {
+                StopInteract();
+            }
+        }
+
+        if (!isInteracting && !isMoving)
         {
             // Reset del input al inicio del frame
             input = Vector2.zero;
 
-            if(MobileControls.Manager != null)
+            if (MobileControls.Manager != null)
                 input = MobileControls.Manager.GetJoystick("Joystick");
 
             // Si el Joystick no está presente usar el input por defecto
-            if(input == Vector2.zero)
+            if (input == Vector2.zero)
             {
                 input.x = Input.GetAxisRaw("Horizontal");
                 input.y = Input.GetAxisRaw("Vertical");
@@ -52,7 +75,7 @@ public class PlayerController : MonoBehaviour
                 var targetPos = transform.position;
                 targetPos.x += input.x;
                 targetPos.y += input.y;
-                
+
                 lastDirection = input;
 
                 if (IsWalkable(targetPos))
@@ -77,6 +100,40 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
 
         CheckForEncounters();
+    }
+
+    private void Interact()
+    {
+        Vector3 interactPosition = transform.position + new Vector3(lastDirection.x, lastDirection.y);
+        Collider2D collider = Physics2D.OverlapCircle(interactPosition, 0.3f, interactLayer);
+        if (collider != null)
+        {
+            Debug.Log("Interactuando con " + collider.gameObject.name);
+
+            isInteracting = true;
+            animator.SetBool("isMoving", false);
+
+            interactedObject = collider.gameObject.GetComponent<Interactable>();
+            if (interactedObject != null)
+            {
+                interactedObject.Interact(this.gameObject);
+                DialogManager.Instance.OnDialogEnded += OnDialogEnded;
+            }
+        }
+    }
+
+    private void StopInteract()
+    {
+        if (isInteracting)
+        {
+            isInteracting = false;
+            DialogManager.Instance.OnDialogEnded -= OnDialogEnded;
+            interactTimer = interactDelay;
+            if (interactedObject != null)
+            {
+                interactedObject.StopInteract();
+            }
+        }
     }
 
     private bool IsWalkable(Vector3 targetPos)
@@ -104,5 +161,9 @@ public class PlayerController : MonoBehaviour
     public Vector2 GetLastDirection()
     {
         return lastDirection;
+    }
+    void OnDialogEnded()
+    {
+        StopInteract();
     }
 }
