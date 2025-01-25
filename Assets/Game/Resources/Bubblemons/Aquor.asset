@@ -15,8 +15,8 @@ MonoBehaviour:
   name: Aquor
   description: "Una criatura con forma fluida, como un peque\xF1o ser transl\xFAcido
     que lleva burbujas flotando dentro de su cuerpo."
-  frontSprite: {fileID: 21300000, guid: 9b0e6fc5f36b9ec4197e23d680b3707a, type: 3}
-  backSprite: {fileID: 21300000, guid: 1287bcbc279066d459ff39bc3b587760, type: 3}
+  frontSprite: {fileID: 21300000, guid: 163cdf30ffc80c34d918ea83ab5e762f, type: 3}
+  backSprite: {fileID: 21300000, guid: 612b6aa88e95291469e1d96088ebc649, type: 3}
   type1: 3
   type2: 14
   maxHP: 45
@@ -25,3 +25,8 @@ MonoBehaviour:
   spAttack: 65
   spDefense: 65
   speed: 45
+  learnableMoves:
+  - moveBase: {fileID: 11400000, guid: efad426cc4979e24b8467f60c5b153c6, type: 2}
+    level: 4
+  - moveBase: {fileID: 11400000, guid: c57e28720427276409b2ad386a626be9, type: 2}
+    level: 1

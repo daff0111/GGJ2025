@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,8 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
     public LayerMask grassLayer;
+
+    public event Action OnEncountered;
     public LayerMask interactLayer;
     public float interactDelay = 1.0f;
 
@@ -25,7 +28,7 @@ public class PlayerController : MonoBehaviour
         isInteracting = false;
     }
 
-    private void Update()
+    public void HandleUpdate()
     {
         if (!isInteracting)
         {
@@ -52,7 +55,7 @@ public class PlayerController : MonoBehaviour
             if (MobileControls.Manager != null)
                 input = MobileControls.Manager.GetJoystick("Joystick");
 
-            // Si el Joystick no está presente usar el input por defecto
+            // Si el Joystick no estï¿½ presente usar el input por defecto
             if (input == Vector2.zero)
             {
                 input.x = Input.GetAxisRaw("Horizontal");
@@ -151,9 +154,9 @@ public class PlayerController : MonoBehaviour
     {
         if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null)
         {
-            if (Random.Range(1, 101) <= 10)
+            if (UnityEngine.Random.Range(1, 101) <= 10)
             {
-                Debug.Log("Pokemon encontrado!");
+                OnEncountered();
             }
         }
     }

@@ -31,7 +31,6 @@ public class BattleSystem : MonoBehaviour
         dialogBox.SetMoveNames(playerUnit.Bubblemon.Moves);
 
         yield return dialogBox.TypeDialog($"A wild {enemyUnit.Bubblemon.Base.Name} appeared.");
-        yield return new WaitForSeconds(1f);
 
         PlayerAction();
     }
@@ -51,7 +50,69 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableMoveSelector(true);
     }
 
-    private void Update()
+    IEnumerator PerformPlayerMove()
+    {
+        state = BattleState.Busy;
+
+        var move = playerUnit.Bubblemon.Moves[currentMove];
+        yield return dialogBox.TypeDialog($"{playerUnit.Bubblemon.Base.Name} used {move.Base.Name}");
+
+        playerUnit.PlayerAttackAnimation();
+        yield return new WaitForSeconds(1f);
+
+        enemyUnit.PlayHitAnimation();
+        var damageDetails = enemyUnit.Bubblemon.TakeDamage(move, playerUnit.Bubblemon);
+        yield return enemyHud.UpdateHP();
+
+        if (damageDetails.Fainted)
+        {
+            yield return dialogBox.TypeDialog($"{enemyUnit.Bubblemon.Base.Name} Fainted");
+            enemyUnit.PlayFaintAnimation();
+        }
+        else
+        {
+            StartCoroutine(EnemyMove());
+        }
+    }
+
+    IEnumerator EnemyMove()
+    {
+        state = BattleState.EnemyMove;
+
+        var move = enemyUnit.Bubblemon.GetRandomMove();
+        yield return dialogBox.TypeDialog($"{enemyUnit.Bubblemon.Base.Name} used {move.Base.Name}");
+
+        enemyUnit.PlayerAttackAnimation();
+        yield return new WaitForSeconds(1f);
+
+        playerUnit.PlayHitAnimation();
+        var damageDetails = playerUnit.Bubblemon.TakeDamage(move, playerUnit.Bubblemon);
+        yield return playerHud.UpdateHP();
+        yield return ShowDamageDetails(damageDetails);
+
+        if (damageDetails.Fainted)
+        {
+            yield return dialogBox.TypeDialog($"{playerUnit.Bubblemon.Base.Name} Fainted");
+            playerUnit.PlayFaintAnimation();
+        }
+        else
+        {
+            PlayerAction();
+        }
+    }
+
+    IEnumerator ShowDamageDetails(DamageDetails damageDetails)
+    {
+        if (damageDetails.Critical > 1f)
+            yield return dialogBox.TypeDialog("A critical hit!");
+
+        if (damageDetails.TypeEffectiveness > 1f)
+            yield return dialogBox.TypeDialog("It´s super effective! ");
+        else if (damageDetails.TypeEffectiveness < 1f)
+            yield return dialogBox.TypeDialog("It´s not very effective... ");
+    }
+
+    public void HandleUpdate()
     {
         if (state == BattleState.PlayerAction)
         {
@@ -116,5 +177,12 @@ public class BattleSystem : MonoBehaviour
         }
 
         dialogBox.UpdateMoveSelection(currentMove, playerUnit.Bubblemon.Moves[currentMove]);
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            dialogBox.EnableMoveSelector(false);
+            dialogBox.EnableDialogText(true);
+            StartCoroutine(PerformPlayerMove());
+        }
     }
 }
