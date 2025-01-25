@@ -19,7 +19,7 @@ public class BattleSystem : MonoBehaviour
     int currentAction;
     int currentMove;
 
-    private void Start()
+    public void StartBattle()
     {
         StartCoroutine(SetupBattle());
     }

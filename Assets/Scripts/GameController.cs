@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
+
+        battleSystem.StartBattle();
     }
 
     void EndBattle(bool won)

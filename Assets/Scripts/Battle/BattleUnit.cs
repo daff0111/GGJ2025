@@ -30,6 +30,7 @@ public class BattleUnit : MonoBehaviour
         else
             image.sprite = Bubblemon.Base.FrontSprite;
 
+        image.color = originalColor;
         PlayEnterAnimation();
     }
 
