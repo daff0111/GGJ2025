@@ -57,11 +57,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\MobileControls\ClickTracker.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\MapArea.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleHud.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleSprite.cs" />
     <Compile Include="Assets\Scripts\AI\NPCController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Bubblemons\BubblemonParty.cs" />
     <Compile Include="Assets\Scripts\Bubblemons\Move.cs" />
+    <Compile Include="Assets\Scripts\Battle\PartyScreen.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleUnit.cs" />
     <Compile Include="Assets\Scripts\Battle\HPBar.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleEPOOutline.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Assets\Scripts\Bubblemons\BubblemonBase.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleDialogBox.cs" />
     <Compile Include="Assets\Scripts\Bubblemons\MoveBase.cs" />
+    <Compile Include="Assets\Scripts\Battle\PartyMemberUI.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModulePhysics.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\Scripts\Player\CameraFollow.cs" />
@@ -85,12 +89,9 @@
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUI.cs" />
-    <Compile Include="Assets\Scripts\Bubblemons\BubblemonParty.cs" />
-    <Compile Include="Assets\Scripts\Battle\PartyMemberUI.cs" />
-    <Compile Include="Assets\Scripts\Gameplay\MapArea.cs" />
-    <Compile Include="Assets\Scripts\Battle\PartyScreen.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Tiles\Cave\_license.txt" />
     <None Include="Assets\DOTween\readme.txt" />
     <None Include="Assets\DOTween\DOTween.dll" />
     <None Include="Assets\DOTween\DOTween.XML" />

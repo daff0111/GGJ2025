@@ -15,8 +15,8 @@ MonoBehaviour:
   name: Luminia
   description: "Una criatura flotante, de forma redondeada o et\xE9rea, con un cuerpo
     transl\xFAcido que brilla en tonos dorados y blancos."
-  frontSprite: {fileID: 21300000, guid: a193ec92d2819f6489873633b82b0ea5, type: 3}
-  backSprite: {fileID: 21300000, guid: 0ce144dcd820ad34b89e6578838bb0d3, type: 3}
+  frontSprite: {fileID: 21300000, guid: ed864259cf75c514db7a4d856428986e, type: 3}
+  backSprite: {fileID: 21300000, guid: ed864259cf75c514db7a4d856428986e, type: 3}
   type1: 4
   type2: 11
   maxHP: 45

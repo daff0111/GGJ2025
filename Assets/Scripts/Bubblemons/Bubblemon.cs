@@ -115,10 +115,8 @@ public class Bubblemon
             return null; // O un movimiento predeterminado si lo deseas
         }
         // Si hay movimientos disponibles, devuelve uno aleatorio
-        //int randomIndex = Random.Range(0, Moves.Count);
-        //return Moves[randomIndex];
-        return Moves = Random.Range(0, Moves.Count);
-        //return Moves[r];
+        int r = Random.Range(0, Moves.Count);
+        return Moves[r];
     }
 }
 
