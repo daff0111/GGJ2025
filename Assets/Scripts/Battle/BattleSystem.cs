@@ -261,12 +261,7 @@ public class BattleSystem : MonoBehaviour
             dialogBox.EnableDialogText(true);
             StartCoroutine(PerformPlayerMove());
         }
-        if ((MobileControls.Manager.GetMobileButtonDown("ButtonB") || Input.GetKeyDown(KeyCode.B)))
-        {
-            dialogBox.EnableMoveSelector(false);
-            PlayerAction();
-        }
-        else if (Input.GetKeyDown(KeyCode.X))
+        if ((MobileControls.Manager.GetMobileButtonDown("ButtonB") || Input.GetKeyDown(KeyCode.X)))
         {
             dialogBox.EnableMoveSelector(false);
             dialogBox.EnableDialogText(true);
@@ -301,7 +296,7 @@ public class BattleSystem : MonoBehaviour
 
         partyScreen.UpdateMemberSelection(currentMember);
 
-        if (Input.GetKeyDown(KeyCode.Z))
+        if ((MobileControls.Manager.GetMobileButtonDown("ButtonA") || Input.GetKeyDown(KeyCode.Z)))
         {
             var selectedMember = playerParty.Bubblemons[currentMember];
             if (selectedMember.HP <= 0 )
@@ -318,7 +313,7 @@ public class BattleSystem : MonoBehaviour
             state = BattleState.Busy;
             StartCoroutine(SwitchBubblemon(selectedMember));
         }
-        else if (Input.GetKeyDown(KeyCode.X))
+        else if (MobileControls.Manager.GetMobileButtonDown("ButtonB") || Input.GetKeyDown(KeyCode.X))
         {
             partyScreen.gameObject.SetActive(false);
             PlayerAction();

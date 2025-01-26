@@ -129,7 +129,7 @@ MonoBehaviour:
   colliderRadius: 0.35
   BubblemonType:
     _base: {fileID: 11400000, guid: af9ab30fe75b61d439b9766e3f3dd898, type: 2}
-    level: 1
+    level: 10
 --- !u!114 &1762701323
 MonoBehaviour:
   m_ObjectHideFlags: 0
