@@ -10,6 +10,7 @@ public class CompanionController : MonoBehaviour
     public GameObject followTargetObject;
     public Vector2 followOffset;
     public float colliderRadius = 0.35f;
+    [SerializeField] public Bubblemon BubblemonType;
 
     private bool isMoving;
     private Vector3 moveDirection;
@@ -22,11 +23,16 @@ public class CompanionController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         if(followTargetObject != null )
+        {
             followTargetPlayer = followTargetObject.GetComponent<PlayerController>();
+        }
     }
 
     private void Start()
     {
+        var playerParty = followTargetPlayer.GetComponent<BubblemonParty>();
+        BubblemonType.Init();
+        playerParty.Bubblemons.Add(BubblemonType);
         StartCoroutine(MoveCompanion());
     }
 

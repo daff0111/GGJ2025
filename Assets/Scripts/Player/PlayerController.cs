@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     public LayerMask interactLayer;
     public float interactDelay = 1.0f;
 
+    public Luminia Luminia;
+    public Luminia Aquor;
+
     private bool isMoving;
     private bool isInteracting;
     private Vector2 input;
@@ -148,12 +151,21 @@ public class PlayerController : MonoBehaviour
             return false;
         }
 
+        if(!Luminia.recruited)
+        {
+            collider = Physics2D.OverlapCircle(targetPos, 0.2f, grassLayer);
+            if (collider != null && collider.gameObject != this.gameObject && collider.GetComponent<CompanionController>() == null)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
     private void CheckForEncounters()
     {
-        if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null)
+        if (Luminia.recruited && Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null)
         {
             if (UnityEngine.Random.Range(1, 101) <= 10)
             {
