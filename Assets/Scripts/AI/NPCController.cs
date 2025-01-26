@@ -19,6 +19,7 @@ public class NPCController : MonoBehaviour, Interactable
     private bool isInteracting = false;
 
     private Animator animator;
+    public event Action OnInteractStarted;
     public event Action OnInteractEnded;
 
     private void Awake()
@@ -42,10 +43,14 @@ public class NPCController : MonoBehaviour, Interactable
         isMoving = false;
         Vector3 interactDirection = targetObject.transform.position - transform.position;
         interactDirection.Normalize();
+        if(animator)
+        {
+            animator.SetFloat("moveX", interactDirection.x);
+            animator.SetFloat("moveY", interactDirection.y);
+            animator.SetBool("isMoving", false);
+        }
 
-        animator.SetFloat("moveX", interactDirection.x);
-        animator.SetFloat("moveY", interactDirection.y);
-        animator.SetBool("isMoving", false);
+        OnInteractStarted?.Invoke();
         DialogManager.Instance.ShowDialog(NPCDialog);
     }
 
