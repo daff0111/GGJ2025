@@ -101,15 +101,6 @@ public class Bubblemon
 
     public Move GetRandomMove()
     {
-<<<<<<< HEAD
-=======
-        if (Moves.Count == 0)
-        {
-            Debug.LogError("No moves available for this Bubblemon.");
-            return null; // O un movimiento predeterminado si lo deseas
-        }
-        // Si hay movimientos disponibles, devuelve uno aleatorio
->>>>>>> 438a196470e6928c3fd9296d060c54fade4a14ce
         int r = Random.Range(0, Moves.Count);
         return Moves[r];
     }
