@@ -85,17 +85,21 @@ public class NPCController : MonoBehaviour, Interactable
                 // Chequea si no hay obstaculos
                 if (moveDirection != Vector2.zero && IsWalkable(targetPos) && IsWalkable(transform.position + moveStep))
                 {
-                    // Mover al Animator
-                    animator.SetFloat("moveX", moveDirection.x);
-                    animator.SetFloat("moveY", moveDirection.y);
-                    animator.SetBool("isMoving", true);
+                    if (animator)
+                    {
+                        // Mover al Animator
+                        animator.SetFloat("moveX", moveDirection.x);
+                        animator.SetFloat("moveY", moveDirection.y);
+                        animator.SetBool("isMoving", true);
+                    }
 
                     yield return StartCoroutine(Move(targetPos));
                 }
                 else
                 {
                     // Frenar si no hay movimiento
-                    animator.SetBool("isMoving", false);
+                    if (animator)
+                        animator.SetBool("isMoving", false);
                 }
             }
         }
@@ -151,7 +155,8 @@ public class NPCController : MonoBehaviour, Interactable
 
         isMoving = false;
         // Frenar si no hay movimiento
-        animator.SetBool("isMoving", false);
+        if (animator)
+            animator.SetBool("isMoving", false);
     }
 
     private bool IsWalkable(Vector3 targetPos)
