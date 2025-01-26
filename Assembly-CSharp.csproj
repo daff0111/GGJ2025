@@ -68,6 +68,7 @@
      <Compile Include="Assets\Scripts\Battle\PartyScreen.cs" />
      <Compile Include="Assets\Scripts\Bubblemons\BubblemonParty.cs" />
      <Compile Include="Assets\Scripts\Gameplay\MapArea.cs" />
+     <Compile Include="Assets\Scripts\Puzzles\PuzzleFountain.cs" />
      <None Include="Assets\DOTween\readme.txt" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.14f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

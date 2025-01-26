@@ -318,7 +318,7 @@ public class BattleSystem : MonoBehaviour
             state = BattleState.Busy;
             StartCoroutine(SwitchBubblemon(selectedMember));
         }
-        else if (playerInput.GetKeyDown(KeyCode.X))
+        else if (Input.GetKeyDown(KeyCode.X))
         {
             partyScreen.gameObject.SetActive(false);
             PlayerAction();

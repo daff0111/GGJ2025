@@ -40,7 +40,7 @@ public class PartyScreen : MonoBehaviour
         }
     }
 
-    public void SetMessage(string message)
+    public void SetMessageText(string message)
     {
         messageText.text = message;
     }
