@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 3683240479107570435}
   - component: {fileID: 2771165983363159889}
   - component: {fileID: 261878742093055559}
-  m_Layer: 8
+  - component: {fileID: 3259712913534085017}
+  m_Layer: 10
   m_Name: Fountain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,3 +227,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3259712913534085017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3683240479107570434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59e188abe9f0416438d0d456e3c0b467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0
+  solidObjectsLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  moveInterval: 0
+  pathSteps:
+  - {x: 0, y: 0}
+  NPCDialog:
+    lines:
+    - This is a Magic Fountain. It protects the Bubble against the Rift.

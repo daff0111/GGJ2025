@@ -30,7 +30,7 @@ public class PuzzleFountain : MonoBehaviour
 
     void InteractStarted()
     {
-        if(aquorScript != null && aquorScript.recruited)
+        if(!isRepaired && aquorScript != null && aquorScript.recruited)
         {
             myNPCController.NPCDialog = interactedDialog;
             isRepaired = true;
@@ -39,10 +39,10 @@ public class PuzzleFountain : MonoBehaviour
 
     void InteractEnded()
     {
-        if (isRepaired)
+        if (isRepaired && !myAnimator.enabled)
         {
             myAnimator.enabled = true;
-            myNPCController.NPCDialog = interactedDialog;
+            myNPCController.NPCDialog = repairedDialog;
             if(myAudioSource != null)
             {
                 myAudioSource.Play();

@@ -245,7 +245,7 @@ MonoBehaviour:
   interactedDialog:
     lines:
     - "Feel the life return as my waters flow once more\u2014may this fountain heal
-      what the rift has broken"
+      what the rift has broken."
   repairedDialog:
     lines:
     - "The fountain flows anew, its magic restored\u2014may its waters bring balance

@@ -89,6 +89,8 @@ public class DialogManager : MonoBehaviour
         dialogText.text = "";
         foreach (char letter in line.ToCharArray())
         {
+            if (!isActive)
+                break;
             dialogText.text += letter;
             yield return new WaitForSeconds(1.0f / lettersPerSecond);
         }
