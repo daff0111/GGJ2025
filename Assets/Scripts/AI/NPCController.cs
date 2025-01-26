@@ -9,7 +9,7 @@ public class NPCController : MonoBehaviour, Interactable
     public LayerMask solidObjectsLayer;
     public float moveInterval = 2f; // Tiempo entre movimientos del NPC
     public List<Vector2> pathSteps; // Pasos determinados para un Loop
-    [SerializeField] Dialog NPCDialog;
+    [SerializeField] public Dialog NPCDialog;
 
     private bool isMoving;
     private Vector2 moveDirection;

@@ -5,6 +5,8 @@ using UnityEngine;
 public class Luminia : MonoBehaviour
 {
     public bool recruited = false;
+    public NPCController guideNPC;
+    [SerializeField] public Dialog NPCRecruitedDialog;
 
     private NPCController nPCController;
     private CompanionController companionController;
@@ -26,6 +28,10 @@ public class Luminia : MonoBehaviour
         companionController.enabled = true;
         nPCController.OnInteractEnded -= OnInteracted;
         recruited = true;
+        if(guideNPC != null)
+        {
+            guideNPC.NPCDialog = NPCRecruitedDialog;
+        }
     }
 
     // Update is called once per frame
