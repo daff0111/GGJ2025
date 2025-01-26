@@ -6,8 +6,7 @@ using DG.Tweening;
 
 public class BattleUnit : MonoBehaviour
 {
-    [SerializeField] BubblemonBase _base;
-    [SerializeField] int level;
+
     [SerializeField] bool isPlayerUnit;
 
     public Bubblemon Bubblemon { get; set; }
@@ -22,9 +21,9 @@ public class BattleUnit : MonoBehaviour
         originalColor = image.color;
     }
 
-    public void Setup()
+    public void Setup(Bubblemon bubblemon)
     {
-        Bubblemon = new Bubblemon(_base, level);
+        Bubblemon = bubblemon;
         if (isPlayerUnit)
             image.sprite = Bubblemon.Base.BackSprite;
         else

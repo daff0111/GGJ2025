@@ -26,7 +26,10 @@ public class GameController : MonoBehaviour
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
 
-        battleSystem.StartBattle();
+        var playerParty = playerController.GetComponent<BubblemonParty>();
+        var wildBubblemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildBubblemon();
+
+        battleSystem.StartBattle(playerParty, wildBubblemon);
     }
 
     void EndBattle(bool won)

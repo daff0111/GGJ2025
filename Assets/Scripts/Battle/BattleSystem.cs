@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy }
+public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy, PartyScreen }
 
 public class BattleSystem : MonoBehaviour
 {
@@ -12,6 +12,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleHud playerHud;
     [SerializeField] BattleHud enemyHud;
     [SerializeField] BattleDialogBox dialogBox;
+    [SerializeField] PartyScreen partyScreen;
 
     public event Action<bool> OnBattleOver;
     private Vector2 playerInput;
@@ -19,18 +20,26 @@ public class BattleSystem : MonoBehaviour
     BattleState state;
     int currentAction;
     int currentMove;
+    int currentMember;
 
-    public void StartBattle()
+    BubblemonParty playerParty;
+    Bubblemon wildBubblemon;
+
+    public void StartBattle(BubblemonParty playerParty, Bubblemon wildBubblemon)
     {
+        this.playerParty = playerParty;
+        this.wildBubblemon = wildBubblemon;
         StartCoroutine(SetupBattle());
     }
 
     public IEnumerator SetupBattle()
     {
-        playerUnit.Setup();
-        enemyUnit.Setup();
+        playerUnit.Setup(playerParty.GetHealthyBubblemon());
+        enemyUnit.Setup(wildBubblemon);
         playerHud.SetData(playerUnit.Bubblemon);
         enemyHud.SetData(enemyUnit.Bubblemon);
+
+        partyScreen.Init();
 
         dialogBox.SetMoveNames(playerUnit.Bubblemon.Moves);
 
@@ -48,7 +57,9 @@ public class BattleSystem : MonoBehaviour
 
     void OpenPartyScreen()
     {
-        print("Party Screen");
+        state = BattleState.PartyScreen;
+        partyScreen.SetPartyData(playerParty.Bubblemons);
+        partyScreen.gameObject.SetActive(true);
     }
 
     void PlayerMove()
@@ -127,7 +138,23 @@ public class BattleSystem : MonoBehaviour
             playerUnit.PlayFaintAnimation();
 
             yield return new WaitForSeconds(2f);
-            OnBattleOver(false);
+
+            var nextBubblemon = playerParty.GetHealthyBubblemon();
+            if (nextBubblemon!= null)
+            {
+                playerUnit.Setup(nextBubblemon);
+                playerHud.SetData(nextBubblemon);
+
+                dialogBox.SetMoveNames(nextBubblemon.Moves);
+
+                yield return dialogBox.TypeDialog($"Go {nextBubblemon.Base.Name}!");
+
+                PlayerAction();
+            }
+            else
+            {
+                OnBattleOver(false);
+            }
         }
         else
         {
@@ -156,17 +183,21 @@ public class BattleSystem : MonoBehaviour
         {
             HandleMoveSelection();
         }
+        else if (state == BattleState.PartyScreen)
+        {
+            HandlePartySelection();
+        }
     }
 
     void HandleActionSelection()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (MobileControls.Manager.GetJoystickRight("Joystick") || Input.GetKeyDown(KeyCode.RightArrow))
             ++currentAction;
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (MobileControls.Manager.GetJoystickLeft("Joystick") || Input.GetKeyDown(KeyCode.LeftArrow))
             --currentAction;
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (MobileControls.Manager.GetJoystickDown("Joystick") || Input.GetKeyDown(KeyCode.DownArrow))
             currentAction += 2;
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (MobileControls.Manager.GetJoystickUp("Joystick") || Input.GetKeyDown(KeyCode.UpArrow))
             currentAction -= 2;
 
         currentAction = Mathf.Clamp(currentAction, 0, 3);
@@ -241,5 +272,70 @@ public class BattleSystem : MonoBehaviour
             dialogBox.EnableDialogText(true);
             PlayerAction();
         }
+    }
+
+    void HandlePartySelection()
+    {
+        if (MobileControls.Manager.GetJoystickRight("Joystick") || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                if (currentMember < playerParty.Bubblemons.Count - 1) // Cambia el límite a la cantidad de Bubblemons.
+                    ++currentMember;
+            }
+            else if (MobileControls.Manager.GetJoystickLeft("Joystick") || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                if (currentMember > 0)
+                    --currentMember;
+            }
+            else if (MobileControls.Manager.GetJoystickDown("Joystick") || Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (currentMember < playerParty.Bubblemons.Count - 2) // Cambia el límite a dos menos que la cantidad total.
+                    currentMember += 2;
+            }
+            else if (MobileControls.Manager.GetJoystickUp("Joystick") || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (currentMember > 1)
+                    currentMember -= 2;
+            }
+
+        currentMember = Mathf.Clamp(currentMember, 0, playerParty.Bubblemons.Count - 1); // Ajusta el rango al total de miembros.
+
+        partyScreen.UpdateMemberSelection(currentMember);
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            var selectedMember = playerParty.Bubblemons[currentMember];
+            if (selectedMember.HP <= 0 )
+            {
+                partyScreen.SetMessageText("You can´t send out a fainted bubblemon");
+                return;
+            }
+            if (selectedMember == playerUnit.Bubblemon)
+            {
+                partyScreen.SetMessageText("You can´t switch with the same bubblemon");
+                return;
+            }
+            partyScreen.gameObject.SetActive(false);
+            state = BattleState.Busy;
+            StartCoroutine(SwitchBubblemon(selectedMember));
+        }
+        else if (playerInput.GetKeyDown(KeyCode.X))
+        {
+            partyScreen.gameObject.SetActive(false);
+            PlayerAction();
+        }
+    }
+
+    IEnumerator SwitchBubblemon(Bubblemon newBubblemon)
+    {
+        yield return dialogBox.TypeDialog($"Come back {playerUnit.Bubblemon.Base.Name}");
+        playerUnit.PlayFaintAnimation();
+        yield return new WaitForSeconds(2f);
+
+        playerUnit.Setup(newBubblemon);
+        playerHud.SetData(newBubblemon);
+        dialogBox.SetMoveNames(newBubblemon.Moves);
+        yield return dialogBox.TypeDialog($"Go {newBubblemon.Base.Name}");
+
+        StartCoroutine(EnemyMove());
     }
 }

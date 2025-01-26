@@ -3,19 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class Bubblemon
 {
-    public BubblemonBase Base { get; set; }
-    public int Level { get; set; }
+    [SerializeField] BubblemonBase _base;
+    [SerializeField] int level;
+
+    public BubblemonBase Base { 
+        get {
+            return _base;
+        }
+    }
+    public int Level { 
+        get {
+            return level;
+        }
+    }
 
     public int HP { get; set; }
 
     public List<Move> Moves { get; set; }
 
-    public Bubblemon(BubblemonBase pBase, int pLevel)
+    public void Init()
     {
-        Base = pBase;
-        Level = pLevel;
         HP = MaxHp;
 
         // Generate Moves
