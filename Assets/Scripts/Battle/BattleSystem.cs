@@ -94,21 +94,34 @@ public class BattleSystem : MonoBehaviour
         var move = playerUnit.Bubblemon.Moves[currentMove];
         move.PP--;
         yield return dialogBox.TypeDialog($"{playerUnit.Bubblemon.Base.Name} used {move.Base.Name}");
+        Debug.Log($"Player used {move.Base.Name}");  // Verifica que el nombre del movimiento es Burbuja
 
         playerUnit.PlayerAttackAnimation();
         yield return new WaitForSeconds(1f);
 
         enemyUnit.PlayHitAnimation();
         var damageDetails = enemyUnit.Bubblemon.TakeDamage(move, playerUnit.Bubblemon);
+        Debug.Log("Damage calculated: " + damageDetails);
+
         yield return enemyHud.UpdateHP();
+        Debug.Log("Enemy HP updated: " + enemyUnit.Bubblemon.HP);
 
         if (damageDetails.Fainted)
         {
-            yield return dialogBox.TypeDialog($"{enemyUnit.Bubblemon.Base.Name} Fainted");
-            enemyUnit.PlayFaintAnimation();
+        Debug.Log($"{enemyUnit.Bubblemon.Base.Name} fainted");
 
-            yield return new WaitForSeconds(2f);
-            OnBattleOver(true);
+        // Mostrar mensaje y animación de desmayo
+        yield return dialogBox.TypeDialog($"{enemyUnit.Bubblemon.Base.Name} Fainted");
+        enemyUnit.PlayFaintAnimation();
+
+        // Espera el tiempo necesario para la animación de desmayo
+        yield return new WaitForSeconds(2f);
+
+        // Si ya tienes EndBattle para manejar la finalización de la batalla, solo llama eso
+        //yield return StartCoroutine(EndBattle()); // Asegúrate de que EndBattle maneje todo
+
+        // Este paso podría no ser necesario si EndBattle ya está gestionando el final de la batalla
+        OnBattleOver(true);
         }
         else
         {
@@ -126,6 +139,7 @@ public class BattleSystem : MonoBehaviour
 
         enemyUnit.PlayerAttackAnimation();
         yield return new WaitForSeconds(1f);
+        Debug.Log("Enemy hit animation played");
 
         playerUnit.PlayHitAnimation();
         var damageDetails = playerUnit.Bubblemon.TakeDamage(move, playerUnit.Bubblemon);
@@ -134,6 +148,7 @@ public class BattleSystem : MonoBehaviour
 
         if (damageDetails.Fainted)
         {
+            Debug.Log($"{enemyUnit.Bubblemon.Base.Name} fainted");
             yield return dialogBox.TypeDialog($"{playerUnit.Bubblemon.Base.Name} Fainted");
             playerUnit.PlayFaintAnimation();
 
@@ -337,5 +352,6 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog($"Go {newBubblemon.Base.Name}");
 
         StartCoroutine(EnemyMove());
+        Debug.Log("Enemy's turn");
     }
 }
