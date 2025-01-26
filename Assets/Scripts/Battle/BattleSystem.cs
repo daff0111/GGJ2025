@@ -129,7 +129,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    IEnumerator EnemyMove()
+    public IEnumerator EnemyMove()
     {
         state = BattleState.EnemyMove;
 
