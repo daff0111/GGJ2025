@@ -28,11 +28,8 @@ public class Bubblemon
     {
         HP = MaxHp;
 
-         // Asegúrate de que Moves no sea null antes de agregar los movimientos
-        Moves = new List<Move>();
-
         // Generate Moves
-        //Moves = new List<Move>();
+        Moves = new List<Move>();
         foreach (var move in Base.LearnableMoves)
         {
             if (move.Level <= Level)
@@ -40,11 +37,6 @@ public class Bubblemon
 
             if (Moves.Count >= 4)
                 break;
-        }
-        // Si no se añadieron movimientos, se puede agregar un movimiento predeterminado, si lo deseas
-        if (Moves.Count == 0)
-        {
-            Debug.LogWarning("Bubblemon has no moves available.");
         }
     }
 
@@ -109,16 +101,8 @@ public class Bubblemon
 
     public Move GetRandomMove()
     {
-        if (Moves.Count == 0)
-        {
-            Debug.LogError("No moves available for this Bubblemon.");
-            return null; // O un movimiento predeterminado si lo deseas
-        }
-        // Si hay movimientos disponibles, devuelve uno aleatorio
-        //int randomIndex = Random.Range(0, Moves.Count);
-        //return Moves[randomIndex];
-        return Moves = Random.Range(0, Moves.Count);
-        //return Moves[r];
+        int r = Random.Range(0, Moves.Count);
+        return Moves[r];
     }
 }
 
