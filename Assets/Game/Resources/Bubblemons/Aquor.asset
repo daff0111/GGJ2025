@@ -16,7 +16,7 @@ MonoBehaviour:
   description: "Una criatura con forma fluida, como un peque\xF1o ser transl\xFAcido
     que lleva burbujas flotando dentro de su cuerpo."
   frontSprite: {fileID: 21300000, guid: 163cdf30ffc80c34d918ea83ab5e762f, type: 3}
-  backSprite: {fileID: 21300000, guid: 612b6aa88e95291469e1d96088ebc649, type: 3}
+  backSprite: {fileID: 21300000, guid: 0b19c7ca933954a4ba351d23a0e7f389, type: 3}
   type1: 3
   type2: 14
   maxHP: 45

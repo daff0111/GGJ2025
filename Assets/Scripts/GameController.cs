@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,8 +13,13 @@ public class GameController : MonoBehaviour
     [SerializeField] Camera worldCamera;
     GameState state;
 
+    public Action OnBattleEnded;
+
+    public static GameController Instance { get; private set; }
+
     private void Start()
     {
+        Instance = this;
         playerController.OnEncountered += StartBattle;
         battleSystem.OnBattleOver += EndBattle;
         dialogManager.OnDialogStarted += StartDialog;
@@ -22,14 +28,26 @@ public class GameController : MonoBehaviour
 
     void StartBattle()
     {
+        var wildBubblemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildBubblemon();
+
+        StartBattle(wildBubblemon);
+    }
+
+    public void StartBattle(Bubblemon enemy)
+    {
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
 
         var playerParty = playerController.GetComponent<BubblemonParty>();
-        var wildBubblemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildBubblemon();
 
-        battleSystem.StartBattle(playerParty, wildBubblemon);
+        battleSystem.StartBattle(playerParty, enemy);
+    }
+
+    public void PlayMusic(AudioClip battleAudio)
+    {
+        battleSystem.GetComponent<AudioSource>().clip = battleAudio;
+        battleSystem.GetComponent<AudioSource>().Play();
     }
 
     void EndBattle(bool won)
@@ -37,6 +55,7 @@ public class GameController : MonoBehaviour
         state = GameState.FreeRoam;
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
+        OnBattleEnded?.Invoke(); 
     }
 
     void StartDialog()

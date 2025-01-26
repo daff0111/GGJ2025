@@ -9,6 +9,7 @@ public class PuzzleFountain : MonoBehaviour
     public Luminia aquorScript;
     public Dialog interactedDialog;
     public Dialog repairedDialog;
+    public GameObject darkShard;
 
     private NPCController myNPCController;
     private Animator myAnimator;
@@ -46,6 +47,7 @@ public class PuzzleFountain : MonoBehaviour
             {
                 myAudioSource.Play();
             }
+            darkShard.SetActive(true);
         }
     }
 

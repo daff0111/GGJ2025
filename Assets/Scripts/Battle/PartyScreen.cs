@@ -7,17 +7,17 @@ public class PartyScreen : MonoBehaviour
 {
     [SerializeField] Text messageText;
 
-    PartyMemberUI[] memberSlots;
+    public PartyMemberUI[] memberSlots;
     List<Bubblemon> bubblemons;
 
     public void Init()
     {
-        memberSlots = GetComponentsInChildren<PartyMemberUI>();
+        //memberSlots = GetComponentsInChildren<PartyMemberUI>();
     }
 
     public void SetPartyData(List<Bubblemon> bubblemons)
     {
-  this.bubblemons = bubblemons;
+        this.bubblemons = bubblemons;
         for (int i = 0; i < memberSlots.Length; i++)
         {
             if (i < bubblemons.Count)
@@ -36,16 +36,16 @@ public class PartyScreen : MonoBehaviour
 
     public void UpdateMemberSelection(int selectedMember)
     {
-        for (int i = 0; i < memberSlots.Length; i++) // Iterar sobre los slots
-    {
-        if (i < bubblemons.Count) // Asegurarse de que hay un Bubblemon para este slot
+        for (int i = 0; i < bubblemons.Count; i++) // Iterar sobre los slots
         {
-            if (i == selectedMember)
-                memberSlots[i].SetSelected(true);
-            else
-                memberSlots[i].SetSelected(false);
+            if (i < bubblemons.Count) // Asegurarse de que hay un Bubblemon para este slot
+            {
+                if (i == selectedMember)
+                    memberSlots[i].SetSelected(true);
+                else
+                    memberSlots[i].SetSelected(false);
+            }
         }
-    }
 
         // Validar que el índice seleccionado no exceda los límites
         if (selectedMember < 0 || selectedMember >= bubblemons.Count)
